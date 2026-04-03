@@ -10,7 +10,8 @@ import {
   ShieldCheck, 
   Info,
   ExternalLink,
-  ArrowRight
+  ArrowRight,
+  Search
 } from 'lucide-react';
 
 interface Props {
@@ -111,11 +112,52 @@ const RecommendationCard: React.FC<{ rec: CareerRecommendation; index: number }>
               <h4 className="text-sm font-bold">Recommended Course</h4>
             </div>
             <p className="text-xs text-gray-400 mb-4">{rec.course}</p>
-            <button className="w-full py-2 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
-              Explore Universities
-              <ExternalLink size={14} />
-            </button>
+            
+            <div className="space-y-4 pt-4 border-t border-white/10">
+              <div>
+                <p className="text-[10px] uppercase font-bold text-gray-500 mb-2">Top Colleges</p>
+                <div className="flex flex-wrap gap-2">
+                  {rec.colleges.map((college, i) => (
+                    <span key={i} className="text-[10px] bg-white/5 px-2 py-1 rounded-md border border-white/10">
+                      {college}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <p className="text-[10px] uppercase font-bold text-gray-500 mb-1">Entrance Exams</p>
+                <p className="text-[10px] text-blue-400 font-bold">{rec.entranceExams.join(", ")}</p>
+              </div>
+
+              <div>
+                <p className="text-[10px] uppercase font-bold text-gray-500 mb-1">Fee Structure</p>
+                <p className="text-[10px] text-gray-300 italic">{rec.fees}</p>
+              </div>
+            </div>
           </div>
+        </div>
+      </div>
+
+      <div className="mt-8 pt-8 border-t border-gray-50 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <Search size={16} className="text-blue-600" />
+            Alternative Career Options
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {rec.alternativeOptions.map((opt, i) => (
+              <span key={i} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                {opt}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-end justify-end">
+          <button className="px-6 py-3 bg-gray-50 hover:bg-gray-100 rounded-xl text-xs font-bold text-gray-900 flex items-center gap-2 transition-all">
+            Explore Universities
+            <ExternalLink size={14} />
+          </button>
         </div>
       </div>
     </motion.div>

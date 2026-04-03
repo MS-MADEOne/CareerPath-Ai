@@ -41,6 +41,10 @@ export const getCareerAnalysis = async (inputs: UserInputs): Promise<CareerAnaly
     3. Top global locations for this career.
     4. A detailed AI impact analysis (how AI will augment or replace tasks, and whether it's a 'safe' or 'high-risk' job).
     5. Growth potential and estimated salary range.
+    6. Top 3-5 Colleges/Universities (Global & India).
+    7. Latest Fee Structure (Approximate).
+    8. Alternative Career Options.
+    9. Required Entrance Exams.
 
     Provide the response in a structured JSON format.
   `;
@@ -74,8 +78,97 @@ export const getCareerAnalysis = async (inputs: UserInputs): Promise<CareerAnaly
                 description: { type: Type.STRING },
                 salaryRange: { type: Type.STRING },
                 growthPotential: { type: Type.STRING },
+                colleges: { type: Type.ARRAY, items: { type: Type.STRING } },
+                fees: { type: Type.STRING },
+                alternativeOptions: { type: Type.ARRAY, items: { type: Type.STRING } },
+                entranceExams: { type: Type.ARRAY, items: { type: Type.STRING } },
               },
-              required: ["course", "job", "location", "degree", "aiImpact", "description", "salaryRange", "growthPotential"],
+              required: [
+                "course", "job", "location", "degree", "aiImpact", 
+                "description", "salaryRange", "growthPotential",
+                "colleges", "fees", "alternativeOptions", "entranceExams"
+              ],
+            },
+          },
+          summary: { type: Type.STRING },
+        },
+        required: ["recommendations", "summary"],
+      },
+    },
+  });
+
+  const text = response.text;
+  if (!text) {
+    throw new Error("No response from AI.");
+  }
+
+  return JSON.parse(text.trim());
+};
+
+export const getQuickAnalysis = async (jobTitle: string, category: string): Promise<CareerAnalysisResponse> => {
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is not set.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+  
+  const prompt = `
+    Provide a detailed career analysis for the role of "${jobTitle}" in the category of "${category}".
+    The target audience is a Class 12th student.
+    
+    Include:
+    1. A suitable professional degree/course.
+    2. A specific job role.
+    3. Top global locations for this career.
+    4. A detailed AI impact analysis (how AI will augment or replace tasks, and whether it's a 'safe' or 'high-risk' job).
+    5. Growth potential and estimated salary range.
+    6. Top 3-5 Colleges/Universities (Global & India).
+    7. Latest Fee Structure (Approximate).
+    8. Alternative Career Options.
+    9. Required Entrance Exams.
+
+    Provide the response in a structured JSON format with a "recommendations" array containing exactly one item, and a "summary".
+  `;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          recommendations: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                course: { type: Type.STRING },
+                job: { type: Type.STRING },
+                location: { type: Type.STRING },
+                degree: { type: Type.STRING },
+                aiImpact: {
+                  type: Type.OBJECT,
+                  properties: {
+                    score: { type: Type.NUMBER },
+                    analysis: { type: Type.STRING },
+                    isLeastAffected: { type: Type.BOOLEAN },
+                  },
+                  required: ["score", "analysis", "isLeastAffected"],
+                },
+                description: { type: Type.STRING },
+                salaryRange: { type: Type.STRING },
+                growthPotential: { type: Type.STRING },
+                colleges: { type: Type.ARRAY, items: { type: Type.STRING } },
+                fees: { type: Type.STRING },
+                alternativeOptions: { type: Type.ARRAY, items: { type: Type.STRING } },
+                entranceExams: { type: Type.ARRAY, items: { type: Type.STRING } },
+              },
+              required: [
+                "course", "job", "location", "degree", "aiImpact", 
+                "description", "salaryRange", "growthPotential",
+                "colleges", "fees", "alternativeOptions", "entranceExams"
+              ],
             },
           },
           summary: { type: Type.STRING },

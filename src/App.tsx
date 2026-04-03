@@ -5,7 +5,7 @@ import ResultsDashboard from './components/ResultsDashboard';
 import QuickExplore from './components/QuickExplore';
 import DefenseVertical from './components/DefenseVertical';
 import { UserInputs, CareerAnalysisResponse } from './types';
-import { getCareerAnalysis } from './services/geminiService';
+import { getCareerAnalysis, getQuickAnalysis } from './services/geminiService';
 import { 
   Sparkles, 
   Search, 
@@ -19,7 +19,8 @@ import {
   Briefcase, 
   TrendingUp,
   Info,
-  AlertTriangle
+  AlertTriangle,
+  Loader2
 } from 'lucide-react';
 
 export default function App() {
@@ -30,9 +31,14 @@ export default function App() {
 
   const isApiKeyMissing = !process.env.GEMINI_API_KEY;
 
-  const handleStartForm = () => setView('form');
+  const handleStartForm = () => {
+    setError(null);
+    setView('form');
+  };
+
   const handleReset = () => {
     setAnalysisData(null);
+    setError(null);
     setView('home');
   };
 
@@ -45,7 +51,23 @@ export default function App() {
       setView('results');
     } catch (err) {
       console.error(err);
-      setError('Failed to generate career analysis. Please try again.');
+      setError(err instanceof Error ? err.message : 'Failed to generate career analysis. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleQuickAnalysis = async (jobTitle: string, category: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await getQuickAnalysis(jobTitle, category);
+      setAnalysisData(data);
+      setView('results');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : 'Failed to generate quick analysis. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -95,7 +117,13 @@ export default function App() {
                   Start Full Assessment
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </button>
-                <button className="px-10 py-5 bg-white text-gray-900 border border-gray-200 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-all">
+                <button 
+                  onClick={() => {
+                    const el = document.getElementById('quick-explore');
+                    el?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-10 py-5 bg-white text-gray-900 border border-gray-200 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-all"
+                >
                   Explore Quick Options
                 </button>
               </motion.div>
@@ -168,9 +196,11 @@ export default function App() {
         </div>
       </section>
 
-      <QuickExplore />
+      <div id="quick-explore">
+        <QuickExplore onSelectJob={handleQuickAnalysis} onStartAssessment={handleStartForm} />
+      </div>
 
-      <DefenseVertical />
+      <DefenseVertical onSelectEntry={handleQuickAnalysis} onStartAssessment={handleStartForm} />
 
       <section className="bg-gray-900 py-32 text-white overflow-hidden relative">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -248,6 +278,21 @@ export default function App() {
       </nav>
 
       <main className="pt-20">
+        {isLoading && (
+          <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center gap-6">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+              className="text-blue-600"
+            >
+              <Loader2 size={48} />
+            </motion.div>
+            <div className="text-center space-y-2">
+              <h3 className="text-2xl font-black text-gray-900">AI is Analyzing...</h3>
+              <p className="text-gray-500">Finding the best colleges, fees, and career paths for you.</p>
+            </div>
+          </div>
+        )}
         {isApiKeyMissing && (
           <div className="max-w-7xl mx-auto px-6 mt-6">
             <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center gap-4 text-amber-800">

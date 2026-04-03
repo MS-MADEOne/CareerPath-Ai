@@ -52,7 +52,12 @@ const DEFENSE_ENTRIES = [
   }
 ];
 
-const DefenseVertical: React.FC = () => {
+interface DefenseVerticalProps {
+  onSelectEntry: (jobTitle: string, category: string) => void;
+  onStartAssessment: () => void;
+}
+
+const DefenseVertical: React.FC<DefenseVerticalProps> = ({ onSelectEntry, onStartAssessment }) => {
   return (
     <section className="py-32 bg-gray-50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
@@ -133,7 +138,10 @@ const DefenseVertical: React.FC = () => {
                       <CheckCircle2 size={16} />
                       <span className="text-xs font-bold uppercase">AI Resilient (100%)</span>
                     </div>
-                    <button className="flex items-center gap-2 text-blue-600 font-bold text-sm hover:gap-3 transition-all">
+                    <button 
+                      onClick={() => onSelectEntry(entry.title, 'Defense & Officer Cadre')}
+                      className="flex items-center gap-2 text-blue-600 font-bold text-sm hover:gap-3 transition-all"
+                    >
                       View Application Guide
                       <ArrowRight size={18} />
                     </button>
@@ -151,15 +159,30 @@ const DefenseVertical: React.FC = () => {
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <p className="text-sm font-bold text-gray-900">UPSC CAPF (AC)</p>
+              <button 
+                onClick={() => onSelectEntry('UPSC CAPF (AC)', 'Defense & Officer Cadre')}
+                className="text-sm font-bold text-gray-900 hover:text-blue-600 text-left"
+              >
+                UPSC CAPF (AC)
+              </button>
               <p className="text-xs text-gray-500">Become an Assistant Commandant in BSF, CRPF, CISF, ITBP, or SSB after graduation.</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-bold text-gray-900">UPSC CDS</p>
+              <button 
+                onClick={() => onSelectEntry('UPSC CDS', 'Defense & Officer Cadre')}
+                className="text-sm font-bold text-gray-900 hover:text-blue-600 text-left"
+              >
+                UPSC CDS
+              </button>
               <p className="text-xs text-gray-500">Entry for graduates into IMA, INA, AFA, and OTA for all three services.</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-bold text-gray-900">AFCAT (Graduate)</p>
+              <button 
+                onClick={() => onSelectEntry('AFCAT (Graduate)', 'Defense & Officer Cadre')}
+                className="text-sm font-bold text-gray-900 hover:text-blue-600 text-left"
+              >
+                AFCAT (Graduate)
+              </button>
               <p className="text-xs text-gray-500">Direct entry for graduates into the Flying, Technical, and Ground Duty branches of the IAF.</p>
             </div>
           </div>
@@ -175,7 +198,10 @@ const DefenseVertical: React.FC = () => {
               <p className="text-blue-100">Our AI can analyze your physical fitness and academic score to suggest the best entry.</p>
             </div>
           </div>
-          <button className="px-8 py-4 bg-white text-blue-600 rounded-2xl font-bold hover:bg-blue-50 transition-all shadow-xl whitespace-nowrap">
+          <button 
+            onClick={onStartAssessment}
+            className="px-8 py-4 bg-white text-blue-600 rounded-2xl font-bold hover:bg-blue-50 transition-all shadow-xl whitespace-nowrap"
+          >
             Get Prep Strategy
           </button>
         </div>

@@ -65,7 +65,12 @@ const QUICK_OPTIONS = [
   }
 ];
 
-const QuickExplore: React.FC = () => {
+interface QuickExploreProps {
+  onSelectJob: (jobTitle: string, category: string) => void;
+  onStartAssessment: () => void;
+}
+
+const QuickExplore: React.FC<QuickExploreProps> = ({ onSelectJob, onStartAssessment }) => {
   const [selectedCategory, setSelectedCategory] = useState(0);
 
   return (
@@ -123,7 +128,10 @@ const QuickExplore: React.FC = () => {
                       {job.risk}
                     </span>
                   </div>
-                  <button className="w-full py-3 bg-gray-50 hover:bg-gray-100 rounded-xl text-sm font-bold text-gray-900 flex items-center justify-center gap-2 transition-all">
+                  <button 
+                    onClick={() => onSelectJob(job.title, QUICK_OPTIONS[selectedCategory].subject)}
+                    className="w-full py-3 bg-gray-50 hover:bg-gray-100 rounded-xl text-sm font-bold text-gray-900 flex items-center justify-center gap-2 transition-all"
+                  >
                     View Details
                     <ArrowRight size={16} />
                   </button>
@@ -140,7 +148,10 @@ const QuickExplore: React.FC = () => {
           <p className="text-purple-100 mb-8 text-lg">
             Our AI engine can provide a deep dive into your specific profile, including 20+ data points for a truly personalized roadmap.
           </p>
-          <button className="px-8 py-4 bg-white text-purple-700 rounded-2xl font-bold hover:bg-purple-50 transition-all shadow-xl shadow-purple-900/20">
+          <button 
+            onClick={onStartAssessment}
+            className="px-8 py-4 bg-white text-purple-700 rounded-2xl font-bold hover:bg-purple-50 transition-all shadow-xl shadow-purple-900/20"
+          >
             Start Full Assessment
           </button>
         </div>

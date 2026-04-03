@@ -34,6 +34,10 @@ export interface CareerRecommendation {
   description: string;
   salaryRange: string;
   growthPotential: string;
+  colleges: string[];
+  fees: string;
+  alternativeOptions: string[];
+  entranceExams: string[];
 }
 
 export interface CareerAnalysisResponse {
