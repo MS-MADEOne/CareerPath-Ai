@@ -28,6 +28,8 @@ export default function App() {
   const [analysisData, setAnalysisData] = useState<CareerAnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const isApiKeyMissing = !process.env.GEMINI_API_KEY;
+
   const handleStartForm = () => setView('form');
   const handleReset = () => {
     setAnalysisData(null);
@@ -246,6 +248,22 @@ export default function App() {
       </nav>
 
       <main className="pt-20">
+        {isApiKeyMissing && (
+          <div className="max-w-7xl mx-auto px-6 mt-6">
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center gap-4 text-amber-800">
+              <div className="p-2 bg-amber-100 rounded-xl">
+                <AlertTriangle size={20} />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <p className="font-bold">API Key Missing</p>
+                <p className="text-sm opacity-90">
+                  The application requires a Gemini API key to function. 
+                  If you are seeing this on GitHub Pages, please add <code>GEMINI_API_KEY</code> to your repository secrets.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
         <AnimatePresence mode="wait">
           {view === 'home' && (
             <motion.div
