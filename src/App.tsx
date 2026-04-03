@@ -39,6 +39,7 @@ export default function App() {
   };
 
   const handleShowHowItWorks = () => {
+    console.log('Switching to how-it-works view');
     setView('how-it-works');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -276,7 +277,7 @@ export default function App() {
           <div className="hidden md:flex items-center gap-8">
             <button 
               onClick={handleShowHowItWorks}
-              className="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors"
+              className={`text-sm font-bold transition-colors ${view === 'how-it-works' ? 'text-blue-600' : 'text-gray-500 hover:text-blue-600'}`}
             >
               How it Works
             </button>
@@ -288,7 +289,7 @@ export default function App() {
                   el?.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
               }}
-              className="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors"
+              className={`text-sm font-bold transition-colors ${view === 'home' ? 'text-gray-500 hover:text-blue-600' : 'text-gray-500 hover:text-blue-600'}`}
             >
               Defense & UPSC
             </button>
