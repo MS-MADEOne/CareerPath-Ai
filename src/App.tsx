@@ -4,6 +4,7 @@ import CareerInputForm from './components/CareerInputForm';
 import ResultsDashboard from './components/ResultsDashboard';
 import QuickExplore from './components/QuickExplore';
 import DefenseVertical from './components/DefenseVertical';
+import HowItWorks from './components/HowItWorks';
 import { UserInputs, CareerAnalysisResponse } from './types';
 import { getCareerAnalysis, getQuickAnalysis } from './services/geminiService';
 import { 
@@ -24,7 +25,7 @@ import {
 } from 'lucide-react';
 
 export default function App() {
-  const [view, setView] = useState<'home' | 'form' | 'results'>('home');
+  const [view, setView] = useState<'home' | 'form' | 'results' | 'how-it-works'>('home');
   const [isLoading, setIsLoading] = useState(false);
   const [analysisData, setAnalysisData] = useState<CareerAnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -34,12 +35,19 @@ export default function App() {
   const handleStartForm = () => {
     setError(null);
     setView('form');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleShowHowItWorks = () => {
+    setView('how-it-works');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleReset = () => {
     setAnalysisData(null);
     setError(null);
     setView('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSubmit = async (inputs: UserInputs) => {
@@ -200,7 +208,9 @@ export default function App() {
         <QuickExplore onSelectJob={handleQuickAnalysis} onStartAssessment={handleStartForm} />
       </div>
 
-      <DefenseVertical onSelectEntry={handleQuickAnalysis} onStartAssessment={handleStartForm} />
+      <div id="defense-section">
+        <DefenseVertical onSelectEntry={handleQuickAnalysis} onStartAssessment={handleStartForm} />
+      </div>
 
       <section className="bg-gray-900 py-32 text-white overflow-hidden relative">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -264,9 +274,36 @@ export default function App() {
             <span className="text-xl font-black text-gray-900 tracking-tight">CareerPath AI</span>
           </div>
           <div className="hidden md:flex items-center gap-8">
-            <a href="#" className="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">How it Works</a>
-            <a href="#" className="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">Defense & UPSC</a>
-            <a href="#" className="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors">Global Markets</a>
+            <button 
+              onClick={handleShowHowItWorks}
+              className="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors"
+            >
+              How it Works
+            </button>
+            <button 
+              onClick={() => {
+                if (view !== 'home') setView('home');
+                setTimeout(() => {
+                  const el = document.getElementById('defense-section');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+              }}
+              className="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors"
+            >
+              Defense & UPSC
+            </button>
+            <button 
+              onClick={() => {
+                if (view !== 'home') setView('home');
+                setTimeout(() => {
+                  const el = document.getElementById('quick-explore');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+              }}
+              className="text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors"
+            >
+              Global Markets
+            </button>
             <button 
               onClick={handleStartForm}
               className="px-6 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-gray-800 transition-all"
@@ -348,6 +385,17 @@ export default function App() {
               className="py-20 px-6"
             >
               <ResultsDashboard data={analysisData} onReset={handleReset} />
+            </motion.div>
+          )}
+
+          {view === 'how-it-works' && (
+            <motion.div
+              key="how-it-works"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <HowItWorks onBack={handleReset} onStartAssessment={handleStartForm} />
             </motion.div>
           )}
         </AnimatePresence>
