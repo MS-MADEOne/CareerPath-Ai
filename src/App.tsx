@@ -30,7 +30,7 @@ export default function App() {
   const [analysisData, setAnalysisData] = useState<CareerAnalysisResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const isApiKeyMissing = !process.env.GEMINI_API_KEY;
+  const isApiKeyMissing = !process.env.GEMINI_API_KEY && !import.meta.env.VITE_GEMINI_API_KEY;
 
   const handleStartForm = () => {
     setError(null);
@@ -338,12 +338,20 @@ export default function App() {
                 <AlertTriangle size={20} />
               </div>
               <div className="flex-1 text-center sm:text-left">
-                <p className="font-bold">API Key Missing</p>
+                <p className="font-bold">API Key Missing or Build Required</p>
                 <p className="text-sm opacity-90">
-                  The application requires a Gemini API key to function. 
-                  If you are seeing this on GitHub Pages, please add <code>GEMINI_API_KEY</code> to your repository secrets.
+                  The application requires a Gemini API key. If you've already added <code>GEMINI_API_KEY</code> to your GitHub Secrets, 
+                  you <strong>must re-run the deployment workflow</strong> in the Actions tab for the changes to take effect.
                 </p>
               </div>
+              <a 
+                href="https://github.com/settings/tokens" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-amber-200 hover:bg-amber-300 rounded-xl text-xs font-bold transition-colors"
+              >
+                Get API Key
+              </a>
             </div>
           </div>
         )}

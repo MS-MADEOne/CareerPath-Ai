@@ -1,7 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { UserInputs, CareerAnalysisResponse } from "../types";
 
-const apiKey = process.env.GEMINI_API_KEY;
+const apiKey = process.env.GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
 
 const handleApiError = (error: any): never => {
   console.error("Gemini API Error:", error);
