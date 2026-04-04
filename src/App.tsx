@@ -347,6 +347,25 @@ export default function App() {
             </div>
           </div>
         )}
+        {error && view !== 'form' && (
+          <div className="max-w-7xl mx-auto px-6 mt-6">
+            <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex flex-col sm:flex-row items-center gap-4 text-red-800">
+              <div className="p-2 bg-red-100 rounded-xl">
+                <AlertTriangle size={20} />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <p className="font-bold">Error Occurred</p>
+                <p className="text-sm opacity-90">{error}</p>
+              </div>
+              <button 
+                onClick={() => setError(null)}
+                className="px-4 py-2 bg-red-100 hover:bg-red-200 rounded-xl text-xs font-bold transition-colors"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        )}
         <AnimatePresence mode="wait">
           {view === 'home' && (
             <motion.div

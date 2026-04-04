@@ -3,6 +3,31 @@ import { UserInputs, CareerAnalysisResponse } from "../types";
 
 const apiKey = process.env.GEMINI_API_KEY;
 
+const handleApiError = (error: any): never => {
+  console.error("Gemini API Error:", error);
+  
+  const errorMessage = error?.message || "";
+  const errorStatus = error?.status || "";
+  
+  if (errorMessage.includes("API key expired") || errorMessage.includes("API_KEY_INVALID")) {
+    throw new Error("The AI service key has expired or is invalid. Please update your GEMINI_API_KEY in GitHub Secrets and rebuild the app.");
+  }
+  
+  if (errorMessage.includes("quota") || errorMessage.includes("429")) {
+    throw new Error("We've reached the free limit for AI requests. Please try again in a few minutes.");
+  }
+  
+  if (errorMessage.includes("network") || errorMessage.includes("fetch") || !navigator.onLine) {
+    throw new Error("Network error detected. Please check your internet connection and try again.");
+  }
+
+  if (errorMessage.includes("safety") || errorMessage.includes("blocked")) {
+    throw new Error("The request was blocked by AI safety filters. Please try rephrasing your inputs.");
+  }
+
+  throw new Error("Something went wrong while connecting to the AI. Please try again later.");
+};
+
 export const getCareerAnalysis = async (inputs: UserInputs): Promise<CareerAnalysisResponse> => {
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY is not set.");
@@ -49,60 +74,64 @@ export const getCareerAnalysis = async (inputs: UserInputs): Promise<CareerAnaly
     Provide the response in a structured JSON format.
   `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          recommendations: {
-            type: Type.ARRAY,
-            items: {
-              type: Type.OBJECT,
-              properties: {
-                course: { type: Type.STRING },
-                job: { type: Type.STRING },
-                location: { type: Type.STRING },
-                degree: { type: Type.STRING },
-                aiImpact: {
-                  type: Type.OBJECT,
-                  properties: {
-                    score: { type: Type.NUMBER },
-                    analysis: { type: Type.STRING },
-                    isLeastAffected: { type: Type.BOOLEAN },
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            recommendations: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  course: { type: Type.STRING },
+                  job: { type: Type.STRING },
+                  location: { type: Type.STRING },
+                  degree: { type: Type.STRING },
+                  aiImpact: {
+                    type: Type.OBJECT,
+                    properties: {
+                      score: { type: Type.NUMBER },
+                      analysis: { type: Type.STRING },
+                      isLeastAffected: { type: Type.BOOLEAN },
+                    },
+                    required: ["score", "analysis", "isLeastAffected"],
                   },
-                  required: ["score", "analysis", "isLeastAffected"],
+                  description: { type: Type.STRING },
+                  salaryRange: { type: Type.STRING },
+                  growthPotential: { type: Type.STRING },
+                  colleges: { type: Type.ARRAY, items: { type: Type.STRING } },
+                  fees: { type: Type.STRING },
+                  alternativeOptions: { type: Type.ARRAY, items: { type: Type.STRING } },
+                  entranceExams: { type: Type.ARRAY, items: { type: Type.STRING } },
                 },
-                description: { type: Type.STRING },
-                salaryRange: { type: Type.STRING },
-                growthPotential: { type: Type.STRING },
-                colleges: { type: Type.ARRAY, items: { type: Type.STRING } },
-                fees: { type: Type.STRING },
-                alternativeOptions: { type: Type.ARRAY, items: { type: Type.STRING } },
-                entranceExams: { type: Type.ARRAY, items: { type: Type.STRING } },
+                required: [
+                  "course", "job", "location", "degree", "aiImpact", 
+                  "description", "salaryRange", "growthPotential",
+                  "colleges", "fees", "alternativeOptions", "entranceExams"
+                ],
               },
-              required: [
-                "course", "job", "location", "degree", "aiImpact", 
-                "description", "salaryRange", "growthPotential",
-                "colleges", "fees", "alternativeOptions", "entranceExams"
-              ],
             },
+            summary: { type: Type.STRING },
           },
-          summary: { type: Type.STRING },
+          required: ["recommendations", "summary"],
         },
-        required: ["recommendations", "summary"],
       },
-    },
-  });
+    });
 
-  const text = response.text;
-  if (!text) {
-    throw new Error("No response from AI.");
+    const text = response.text;
+    if (!text) {
+      throw new Error("No response from AI.");
+    }
+
+    return JSON.parse(text.trim());
+  } catch (error) {
+    return handleApiError(error);
   }
-
-  return JSON.parse(text.trim());
 };
 
 export const getQuickAnalysis = async (jobTitle: string, category: string): Promise<CareerAnalysisResponse> => {
@@ -130,58 +159,62 @@ export const getQuickAnalysis = async (jobTitle: string, category: string): Prom
     Provide the response in a structured JSON format with a "recommendations" array containing exactly one item, and a "summary".
   `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          recommendations: {
-            type: Type.ARRAY,
-            items: {
-              type: Type.OBJECT,
-              properties: {
-                course: { type: Type.STRING },
-                job: { type: Type.STRING },
-                location: { type: Type.STRING },
-                degree: { type: Type.STRING },
-                aiImpact: {
-                  type: Type.OBJECT,
-                  properties: {
-                    score: { type: Type.NUMBER },
-                    analysis: { type: Type.STRING },
-                    isLeastAffected: { type: Type.BOOLEAN },
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            recommendations: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  course: { type: Type.STRING },
+                  job: { type: Type.STRING },
+                  location: { type: Type.STRING },
+                  degree: { type: Type.STRING },
+                  aiImpact: {
+                    type: Type.OBJECT,
+                    properties: {
+                      score: { type: Type.NUMBER },
+                      analysis: { type: Type.STRING },
+                      isLeastAffected: { type: Type.BOOLEAN },
+                    },
+                    required: ["score", "analysis", "isLeastAffected"],
                   },
-                  required: ["score", "analysis", "isLeastAffected"],
+                  description: { type: Type.STRING },
+                  salaryRange: { type: Type.STRING },
+                  growthPotential: { type: Type.STRING },
+                  colleges: { type: Type.ARRAY, items: { type: Type.STRING } },
+                  fees: { type: Type.STRING },
+                  alternativeOptions: { type: Type.ARRAY, items: { type: Type.STRING } },
+                  entranceExams: { type: Type.ARRAY, items: { type: Type.STRING } },
                 },
-                description: { type: Type.STRING },
-                salaryRange: { type: Type.STRING },
-                growthPotential: { type: Type.STRING },
-                colleges: { type: Type.ARRAY, items: { type: Type.STRING } },
-                fees: { type: Type.STRING },
-                alternativeOptions: { type: Type.ARRAY, items: { type: Type.STRING } },
-                entranceExams: { type: Type.ARRAY, items: { type: Type.STRING } },
+                required: [
+                  "course", "job", "location", "degree", "aiImpact", 
+                  "description", "salaryRange", "growthPotential",
+                  "colleges", "fees", "alternativeOptions", "entranceExams"
+                ],
               },
-              required: [
-                "course", "job", "location", "degree", "aiImpact", 
-                "description", "salaryRange", "growthPotential",
-                "colleges", "fees", "alternativeOptions", "entranceExams"
-              ],
             },
+            summary: { type: Type.STRING },
           },
-          summary: { type: Type.STRING },
+          required: ["recommendations", "summary"],
         },
-        required: ["recommendations", "summary"],
       },
-    },
-  });
+    });
 
-  const text = response.text;
-  if (!text) {
-    throw new Error("No response from AI.");
+    const text = response.text;
+    if (!text) {
+      throw new Error("No response from AI.");
+    }
+
+    return JSON.parse(text.trim());
+  } catch (error) {
+    return handleApiError(error);
   }
-
-  return JSON.parse(text.trim());
 };
