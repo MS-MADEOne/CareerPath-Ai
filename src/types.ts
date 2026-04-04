@@ -3,22 +3,22 @@ export interface UserInputs {
   grades: string;
   interests: string[];
   skills: string[];
-  workEnvironment: string;
+  workEnvironment: string[];
   salaryExpectation: string;
-  willingnessToRelocate: string;
+  willingnessToRelocate: string[];
   industries: string[];
   extracurriculars: string;
-  learningStyle: string;
+  learningStyle: string[];
   values: string[];
   hobbies: string;
   languages: string[];
-  studyDuration: string;
+  studyDuration: string[];
   financialNeeds: string;
-  personality: string;
-  researchVsApp: string;
-  entrepreneurship: string;
+  personality: string[];
+  researchVsApp: string[];
+  entrepreneurship: string[];
   preferredRegions: string[];
-  techSavviness: string;
+  techSavviness: string[];
 }
 
 export interface CareerRecommendation {
@@ -33,6 +33,10 @@ export interface CareerRecommendation {
   };
   description: string;
   salaryRange: string;
+  startingSalaryINR: string;
+  expertSalaryINR: string;
+  marketDemandScore: number; // 0 to 100
+  skillMatchScore: number; // 0 to 100
   growthPotential: string;
   colleges: string[];
   fees: string;

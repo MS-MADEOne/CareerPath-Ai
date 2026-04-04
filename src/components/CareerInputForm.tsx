@@ -35,22 +35,22 @@ const CareerInputForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
     grades: '',
     interests: [],
     skills: [],
-    workEnvironment: '',
+    workEnvironment: [],
     salaryExpectation: '',
-    willingnessToRelocate: '',
+    willingnessToRelocate: [],
     industries: [],
     extracurriculars: '',
-    learningStyle: '',
+    learningStyle: [],
     values: [],
     hobbies: '',
     languages: [],
-    studyDuration: '',
+    studyDuration: [],
     financialNeeds: '',
-    personality: '',
-    researchVsApp: '',
-    entrepreneurship: '',
+    personality: [],
+    researchVsApp: [],
+    entrepreneurship: [],
     preferredRegions: [],
-    techSavviness: '',
+    techSavviness: [],
   });
 
   const handleInputChange = (field: keyof UserInputs, value: any) => {
@@ -115,14 +115,15 @@ const CareerInputForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Study Duration</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Study Duration (Select all that apply)</label>
               <div className="flex gap-4">
                 {['3 Years', '4 Years', '5+ Years'].map(dur => (
                   <button
                     key={dur}
-                    onClick={() => handleInputChange('studyDuration', dur)}
-                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all ${formData.studyDuration === dur ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    onClick={() => handleToggleArray('studyDuration', dur)}
+                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${formData.studyDuration.includes(dur) ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                   >
+                    {formData.studyDuration.includes(dur) && <CheckCircle2 size={16} />}
                     {dur}
                   </button>
                 ))}
@@ -200,42 +201,45 @@ const CareerInputForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Work Environment</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Work Environment (Select all that apply)</label>
               <div className="grid grid-cols-2 gap-2">
                 {['Corporate Office', 'Remote/Work from Home', 'Field Work', 'Laboratory', 'Creative Studio', 'Hospital/Clinic'].map(env => (
                   <button
                     key={env}
-                    onClick={() => handleInputChange('workEnvironment', env)}
-                    className={`px-4 py-3 rounded-lg text-sm font-medium transition-all ${formData.workEnvironment === env ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    onClick={() => handleToggleArray('workEnvironment', env)}
+                    className={`px-4 py-3 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${formData.workEnvironment.includes(env) ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                   >
+                    {formData.workEnvironment.includes(env) && <CheckCircle2 size={16} />}
                     {env}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Salary Expectations (Annual)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Salary Expectations (Annual INR)</label>
               <select 
                 value={formData.salaryExpectation}
                 onChange={(e) => handleInputChange('salaryExpectation', e.target.value)}
                 className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"
               >
                 <option value="">Select Range</option>
-                <option value="High (Top 10%)">High (Top 10%)</option>
-                <option value="Above Average">Above Average</option>
-                <option value="Average">Average</option>
+                <option value="₹3L - ₹6L (Entry Level)">₹3L - ₹6L (Entry Level)</option>
+                <option value="₹6L - ₹12L (Mid Level)">₹6L - ₹12L (Mid Level)</option>
+                <option value="₹12L - ₹25L (High Level)">₹12L - ₹25L (High Level)</option>
+                <option value="₹25L+ (Premium Level)">₹25L+ (Premium Level)</option>
                 <option value="Stability over Salary">Stability over Salary</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Willingness to Relocate</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Willingness to Relocate (Select all that apply)</label>
               <div className="flex gap-4">
                 {['International', 'National', 'Local Only'].map(rel => (
                   <button
                     key={rel}
-                    onClick={() => handleInputChange('willingnessToRelocate', rel)}
-                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all ${formData.willingnessToRelocate === rel ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    onClick={() => handleToggleArray('willingnessToRelocate', rel)}
+                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${formData.willingnessToRelocate.includes(rel) ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                   >
+                    {formData.willingnessToRelocate.includes(rel) && <CheckCircle2 size={16} />}
                     {rel}
                   </button>
                 ))}
@@ -261,14 +265,15 @@ const CareerInputForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Learning Style</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Learning Style (Select all that apply)</label>
               <div className="grid grid-cols-2 gap-2">
                 {['Practical/Hands-on', 'Theoretical/Conceptual', 'Visual/Creative', 'Collaborative/Group'].map(style => (
                   <button
                     key={style}
-                    onClick={() => handleInputChange('learningStyle', style)}
-                    className={`px-4 py-3 rounded-lg text-sm font-medium transition-all ${formData.learningStyle === style ? 'bg-orange-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    onClick={() => handleToggleArray('learningStyle', style)}
+                    className={`px-4 py-3 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${formData.learningStyle.includes(style) ? 'bg-orange-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                   >
+                    {formData.learningStyle.includes(style) && <CheckCircle2 size={16} />}
                     {style}
                   </button>
                 ))}
@@ -289,14 +294,15 @@ const CareerInputForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Personality Type</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Personality Type (Select all that apply)</label>
               <div className="flex gap-4">
                 {['Introverted', 'Ambiverted', 'Extroverted'].map(p => (
                   <button
                     key={p}
-                    onClick={() => handleInputChange('personality', p)}
-                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all ${formData.personality === p ? 'bg-orange-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    onClick={() => handleToggleArray('personality', p)}
+                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${formData.personality.includes(p) ? 'bg-orange-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                   >
+                    {formData.personality.includes(p) && <CheckCircle2 size={16} />}
                     {p}
                   </button>
                 ))}
@@ -322,28 +328,30 @@ const CareerInputForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
         return (
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Research vs. Application</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Research vs. Application (Select all that apply)</label>
               <div className="flex gap-4">
                 {['Research Oriented', 'Application Oriented', 'Balanced'].map(opt => (
                   <button
                     key={opt}
-                    onClick={() => handleInputChange('researchVsApp', opt)}
-                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all ${formData.researchVsApp === opt ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    onClick={() => handleToggleArray('researchVsApp', opt)}
+                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${formData.researchVsApp.includes(opt) ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                   >
+                    {formData.researchVsApp.includes(opt) && <CheckCircle2 size={16} />}
                     {opt}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Entrepreneurship Interest</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Entrepreneurship Interest (Select all that apply)</label>
               <div className="flex gap-4">
                 {['High', 'Moderate', 'Low'].map(opt => (
                   <button
                     key={opt}
-                    onClick={() => handleInputChange('entrepreneurship', opt)}
-                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all ${formData.entrepreneurship === opt ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    onClick={() => handleToggleArray('entrepreneurship', opt)}
+                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${formData.entrepreneurship.includes(opt) ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                   >
+                    {formData.entrepreneurship.includes(opt) && <CheckCircle2 size={16} />}
                     {opt}
                   </button>
                 ))}
@@ -364,14 +372,15 @@ const CareerInputForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tech-Savviness Level</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Tech-Savviness Level (Select all that apply)</label>
               <div className="flex gap-4">
                 {['Expert', 'Intermediate', 'Beginner'].map(opt => (
                   <button
                     key={opt}
-                    onClick={() => handleInputChange('techSavviness', opt)}
-                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all ${formData.techSavviness === opt ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    onClick={() => handleToggleArray('techSavviness', opt)}
+                    className={`flex-1 py-3 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${formData.techSavviness.includes(opt) ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                   >
+                    {formData.techSavviness.includes(opt) && <CheckCircle2 size={16} />}
                     {opt}
                   </button>
                 ))}

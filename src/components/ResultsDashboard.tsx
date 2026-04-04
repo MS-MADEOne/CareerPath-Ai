@@ -11,7 +11,8 @@ import {
   Info,
   ExternalLink,
   ArrowRight,
-  Search
+  Search,
+  DollarSign
 } from 'lucide-react';
 
 interface Props {
@@ -64,19 +65,56 @@ const RecommendationCard: React.FC<{ rec: CareerRecommendation; index: number }>
             </div>
           </div>
 
-          <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-white rounded-lg text-blue-600 shadow-sm">
-                <Briefcase size={18} />
+          <div className="space-y-4">
+            <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-white rounded-lg text-blue-600 shadow-sm">
+                  <DollarSign size={18} />
+                </div>
+                <h4 className="text-xs font-bold uppercase text-blue-400 tracking-wider">Salary Analysis (INR)</h4>
               </div>
-              <div>
-                <p className="text-[10px] uppercase font-bold text-blue-400">Est. Salary Range</p>
-                <p className="text-sm font-bold text-blue-900">{rec.salaryRange}</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-[10px] text-blue-500 font-bold uppercase mb-1">Starting Level</p>
+                  <p className="text-lg font-black text-blue-900">{rec.startingSalaryINR}</p>
+                  <p className="text-[10px] text-blue-400 italic">Fresh Graduate</p>
+                </div>
+                <div className="border-l border-blue-200 pl-4">
+                  <p className="text-[10px] text-blue-500 font-bold uppercase mb-1">Expert Level</p>
+                  <p className="text-lg font-black text-blue-900">{rec.expertSalaryINR}</p>
+                  <p className="text-[10px] text-blue-400 italic">10+ Years Exp.</p>
+                </div>
               </div>
             </div>
-            <button className="p-2 hover:bg-blue-100 rounded-full transition-colors text-blue-600">
-              <ArrowRight size={20} />
-            </button>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[10px] font-bold uppercase text-indigo-500">Market Demand</span>
+                  <span className="text-xs font-black text-indigo-700">{rec.marketDemandScore}%</span>
+                </div>
+                <div className="h-1.5 bg-indigo-200 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${rec.marketDemandScore}%` }}
+                    className="h-full bg-indigo-600"
+                  />
+                </div>
+              </div>
+              <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[10px] font-bold uppercase text-emerald-500">Skill Match</span>
+                  <span className="text-xs font-black text-emerald-700">{rec.skillMatchScore}%</span>
+                </div>
+                <div className="h-1.5 bg-emerald-200 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${rec.skillMatchScore}%` }}
+                    className="h-full bg-emerald-600"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -139,25 +177,50 @@ const RecommendationCard: React.FC<{ rec: CareerRecommendation; index: number }>
         </div>
       </div>
 
-      <div className="mt-8 pt-8 border-t border-gray-50 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+      <div className="mt-8 pt-8 border-t border-gray-50 space-y-8">
+        <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+          <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
             <Search size={16} className="text-blue-600" />
-            Alternative Career Options
+            Detailed Review Analysis
           </h4>
-          <div className="flex flex-wrap gap-2">
-            {rec.alternativeOptions.map((opt, i) => (
-              <span key={i} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                {opt}
-              </span>
-            ))}
+          <div className="prose prose-sm max-w-none text-gray-600">
+            <p className="mb-4">
+              As a fresh college graduate, you will typically enter this field at the <span className="font-bold text-blue-600">Starting Level</span>. 
+              The transition from academic learning to professional application focuses on core technical skills and mentorship.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <p className="text-[10px] font-bold uppercase text-gray-400">Entry Strategy</p>
+                <p className="text-xs leading-relaxed">Focus on internships and certifications related to {rec.entranceExams[0] || 'industry standards'}. Networking with alumni in {rec.location.split(',')[0]} is highly recommended.</p>
+              </div>
+              <div className="space-y-2">
+                <p className="text-[10px] font-bold uppercase text-gray-400">Long-term Vision</p>
+                <p className="text-xs leading-relaxed">Reaching the <span className="font-bold text-blue-600">Expert Level</span> requires consistent upskilling, especially in AI-augmented tools. Your salary can grow significantly as you move into leadership roles.</p>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="flex items-end justify-end">
-          <button className="px-6 py-3 bg-gray-50 hover:bg-gray-100 rounded-xl text-xs font-bold text-gray-900 flex items-center gap-2 transition-all">
-            Explore Universities
-            <ExternalLink size={14} />
-          </button>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+              <Search size={16} className="text-blue-600" />
+              Alternative Career Options
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {rec.alternativeOptions.map((opt, i) => (
+                <span key={i} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                  {opt}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-end justify-end">
+            <button className="px-6 py-3 bg-gray-50 hover:bg-gray-100 rounded-xl text-xs font-bold text-gray-900 flex items-center gap-2 transition-all">
+              Explore Universities
+              <ExternalLink size={14} />
+            </button>
+          </div>
         </div>
       </div>
     </motion.div>

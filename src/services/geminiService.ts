@@ -43,22 +43,22 @@ export const getCareerAnalysis = async (inputs: UserInputs): Promise<CareerAnaly
     - Grades: ${inputs.grades}
     - Interests: ${inputs.interests.join(", ")}
     - Skills: ${inputs.skills.join(", ")}
-    - Preferred Work Environment: ${inputs.workEnvironment}
+    - Preferred Work Environment: ${inputs.workEnvironment.join(", ")}
     - Salary Expectation: ${inputs.salaryExpectation}
-    - Willingness to Relocate: ${inputs.willingnessToRelocate}
+    - Willingness to Relocate: ${inputs.willingnessToRelocate.join(", ")}
     - Industries of Interest: ${inputs.industries.join(", ")}
     - Extracurriculars: ${inputs.extracurriculars}
-    - Learning Style: ${inputs.learningStyle}
+    - Learning Style: ${inputs.learningStyle.join(", ")}
     - Core Values: ${inputs.values.join(", ")}
     - Hobbies: ${inputs.hobbies}
     - Languages: ${inputs.languages.join(", ")}
-    - Preferred Study Duration: ${inputs.studyDuration}
+    - Preferred Study Duration: ${inputs.studyDuration.join(", ")}
     - Financial Needs: ${inputs.financialNeeds}
-    - Personality: ${inputs.personality}
-    - Research vs. Application: ${inputs.researchVsApp}
-    - Entrepreneurship Interest: ${inputs.entrepreneurship}
+    - Personality: ${inputs.personality.join(", ")}
+    - Research vs. Application: ${inputs.researchVsApp.join(", ")}
+    - Entrepreneurship Interest: ${inputs.entrepreneurship.join(", ")}
     - Preferred Regions: ${inputs.preferredRegions.join(", ")}
-    - Tech-Savviness: ${inputs.techSavviness}
+    - Tech-Savviness: ${inputs.techSavviness.join(", ")}
 
     For each career path, include:
     1. A suitable professional degree/course.
@@ -66,10 +66,14 @@ export const getCareerAnalysis = async (inputs: UserInputs): Promise<CareerAnaly
     3. Top global locations for this career.
     4. A detailed AI impact analysis (how AI will augment or replace tasks, and whether it's a 'safe' or 'high-risk' job).
     5. Growth potential and estimated salary range.
-    6. Top 3-5 Colleges/Universities (Global & India).
-    7. Latest Fee Structure (Approximate).
-    8. Alternative Career Options.
-    9. Required Entrance Exams.
+    6. Starting Salary (in INR) for a fresh college graduate.
+    7. Expert Salary (in INR) for a professional with 10+ years of experience.
+    8. Market Demand Score (0-100) based on current global and Indian trends.
+    9. Skill Match Score (0-100) based on the student's provided profile.
+    10. Top 3-5 Colleges/Universities (Global & India).
+    11. Latest Fee Structure (Approximate).
+    12. Alternative Career Options.
+    13. Required Entrance Exams.
 
     Provide the response in a structured JSON format.
   `;
@@ -103,6 +107,10 @@ export const getCareerAnalysis = async (inputs: UserInputs): Promise<CareerAnaly
                   },
                   description: { type: Type.STRING },
                   salaryRange: { type: Type.STRING },
+                  startingSalaryINR: { type: Type.STRING },
+                  expertSalaryINR: { type: Type.STRING },
+                  marketDemandScore: { type: Type.NUMBER },
+                  skillMatchScore: { type: Type.NUMBER },
                   growthPotential: { type: Type.STRING },
                   colleges: { type: Type.ARRAY, items: { type: Type.STRING } },
                   fees: { type: Type.STRING },
@@ -111,8 +119,9 @@ export const getCareerAnalysis = async (inputs: UserInputs): Promise<CareerAnaly
                 },
                 required: [
                   "course", "job", "location", "degree", "aiImpact", 
-                  "description", "salaryRange", "growthPotential",
-                  "colleges", "fees", "alternativeOptions", "entranceExams"
+                  "description", "salaryRange", "startingSalaryINR", "expertSalaryINR",
+                  "marketDemandScore", "skillMatchScore",
+                  "growthPotential", "colleges", "fees", "alternativeOptions", "entranceExams"
                 ],
               },
             },
@@ -151,10 +160,14 @@ export const getQuickAnalysis = async (jobTitle: string, category: string): Prom
     3. Top global locations for this career.
     4. A detailed AI impact analysis (how AI will augment or replace tasks, and whether it's a 'safe' or 'high-risk' job).
     5. Growth potential and estimated salary range.
-    6. Top 3-5 Colleges/Universities (Global & India).
-    7. Latest Fee Structure (Approximate).
-    8. Alternative Career Options.
-    9. Required Entrance Exams.
+    6. Starting Salary (in INR) for a fresh college graduate.
+    7. Expert Salary (in INR) for a professional with 10+ years of experience.
+    8. Market Demand Score (0-100) based on current global and Indian trends.
+    9. Skill Match Score (0-100) based on the student's provided profile.
+    10. Top 3-5 Colleges/Universities (Global & India).
+    11. Latest Fee Structure (Approximate).
+    12. Alternative Career Options.
+    13. Required Entrance Exams.
 
     Provide the response in a structured JSON format with a "recommendations" array containing exactly one item, and a "summary".
   `;
@@ -188,6 +201,10 @@ export const getQuickAnalysis = async (jobTitle: string, category: string): Prom
                   },
                   description: { type: Type.STRING },
                   salaryRange: { type: Type.STRING },
+                  startingSalaryINR: { type: Type.STRING },
+                  expertSalaryINR: { type: Type.STRING },
+                  marketDemandScore: { type: Type.NUMBER },
+                  skillMatchScore: { type: Type.NUMBER },
                   growthPotential: { type: Type.STRING },
                   colleges: { type: Type.ARRAY, items: { type: Type.STRING } },
                   fees: { type: Type.STRING },
@@ -196,8 +213,9 @@ export const getQuickAnalysis = async (jobTitle: string, category: string): Prom
                 },
                 required: [
                   "course", "job", "location", "degree", "aiImpact", 
-                  "description", "salaryRange", "growthPotential",
-                  "colleges", "fees", "alternativeOptions", "entranceExams"
+                  "description", "salaryRange", "startingSalaryINR", "expertSalaryINR",
+                  "marketDemandScore", "skillMatchScore",
+                  "growthPotential", "colleges", "fees", "alternativeOptions", "entranceExams"
                 ],
               },
             },
